@@ -229,7 +229,7 @@ function pairEvaluator (ray) {
 		
 			scores[1] = pairFinder(array) || 0;
 			if(scores[1]>0){
-					array = array.filter((num)=>{thirteen(num)!=scores[1]%1000});
+					array = array.filter(num=>thirteen(num)!=scores[1]%1000);
 					scores[2] = pairFinder(array) || 0;
 			}//there's only 3 possible pairs in any set of 7 cards, 2 = 3
 	}
@@ -237,13 +237,13 @@ function pairEvaluator (ray) {
 	
 	let max = Math.max(...scores);
 	
-	if(max>6000) return max - max%1000 + kickerCalculator((max%1000)+13) + kickerCalculator(Math.max(array.filter((num)=>{thirteen(num)!=thirteen(array[i])})));//probably quads
+	if(max>6000) return max - max%1000 + kickerCalculator((max%1000)+13) + kickerCalculator(Math.max(array.filter((num)=>{return thirteen(num)!=thirteen(max-6000)})));//probably quads
 	else if(max>3000){
 		
 
-		scores = scores.filter((num)=>{num!=max});
+		scores = scores.filter((num)=>{return num!=max});
 		return ((Math.max(...scores)>0) ? max - max%1000 + kickerCalculator((max%1000)+13) + Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) : max - max%1000 + kickerCalculator((max%1000)+13)+ (()=>{
-			array = [...ray].filter((num)=>{thirteen(num)!=max%1000});
+			array = [...ray].filter((num)=>{return thirteen(num)!=max%1000});
 			let bigTwo = 0;
 			for(let i = 0; i<2; i++){
 				bigTwo += kickerCalculator(Math.max(...array));
@@ -254,13 +254,13 @@ function pairEvaluator (ray) {
 		
 	}
 	else if(max>2000){
-		scores = scores.filter((num)=>{num!=max});	
+		scores = scores.filter((num)=>{return num!=max});	
 		return ((Math.max(...scores)>0) ? max - max%1000 + kickerCalculator((max%1000)+13) + kickerCalculator((Math.max(...scores)%1000)+13) + Math.max(...scores) - 1500 - Math.max(...scores)%1000: max -max%1000 + kickerCalculator((max%1000)+13) + (()=>{
-			array = [...ray].filter((num)=>{thirteen(num)!=max%1000});
+			array = [...ray].filter((num)=>{return thirteen(num)!=max%1000});
 				let bigThree = 0;
 				for(let i = 0; i<3; i++){
 					bigThree += kickerCalculator(Math.max(...array));
-					array = array.filter(thirteen(num) != thirteen(Math.max(...array)));
+					array = array.filter(num => thirteen(num) != thirteen(Math.max(...array)));
 					
 				}
 				return bigThree;
@@ -300,7 +300,9 @@ function thirteen (number) {
 
 function highCard (input){
 
-let array = [...input];
+	let array = [...input];
+
+{
 /*
 for(let i = array.length-1; i>0; i--){
 
@@ -313,7 +315,7 @@ if(array[i]<array[i-1]){
 }
 
 array.shift(); //removes the lowest*/
-
+/*
 while(array.length>5){
 	let minIndex = array.indexOf(Math.min(...array));
 	
@@ -324,24 +326,29 @@ while(array.length>5){
 	else array.shift();
 	
 	
+}*/ 
+
 }
+	array = array.map(val=>thirteen(val)).sort();
+	array.shift(); array.shift();
+
 
 
 
 //scope for j
-{let j = 0;
- let summer = (array) => {
+	{let j = 0;
+		let summer = (array) => {
 
-	for(let i = 0; i<array.length;i++){
-	
-		j += kickerCalculator(array[i]); 
+			for(let i = 0; i<array.length;i++){
+			
+				j += kickerCalculator(array[i]); 
+			}
+			return j;
+		}
+			return summer(array);
+
+		}
 	}
-	return j;
-}
-	return summer(array);
-
-}
-}
 
 //all the work we did above lets us easily compare by hand value
 //every function always returns the highest possible hand by that method
@@ -360,10 +367,11 @@ export function handEvaluator (array){
 
 
 
-console.log("Kicker finds: " + kickerCalculator(6));
-const thisarray = [4,4,4,4];
-console.log("Highcard = " + highCard(thisarray));
-console.log(handEvaluator(thisarray)); //no longer throwing errors
+//console.log("Kicker finds: " + kickerCalculator(6));
+//const thisarray = [36,5,10,51,19,22,23];
+//console.log("Highcard = " + highCard(thisarray));
+//console.log("handevaluator: " + handEvaluator(thisarray)); //no longer throwing errors
+//console.log(kickerCalculator(thisarray)); //this needs a single int input...
 //console.log(pairFinder(thisarray));
 //console.log(flushFinder(thisarray));//basically works
 //console.log(straightFinder(thisarray)); //fixed

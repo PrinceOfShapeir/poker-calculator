@@ -1,10 +1,17 @@
 //import handEvaluator from './HandCalculator';
 import React, {Component} from 'react';
-import {Button, Card, CardImg, Figure, Container, Row, Col} from 'reactstrap'
-
+import {UncontrolledTooltip, Button, Card, CardImg, Figure, Container, Row, Col} from 'reactstrap';
+import {handEvaluator} from './HandCalculator';
 function fillDeck () {
 
-    return new Array(53).fill(0).map((value, index) => index+1);
+    return new Array(52).fill(0).map((value, index) => index+1);
+
+}
+
+function winsOrLoses (a,b) {
+
+    if(a===b) return "Tied"
+    else return (a>b) ? "Wins" : "Loses";
 
 }
 
@@ -41,7 +48,10 @@ export default class PokerView extends Component {
             leftWins: 0,
             rightWins: 0,
             ties: 0,
-            deck: fillDeck()
+            deck: fillDeck(),
+            dealt: false,
+            handAValue: 0,
+            handBValue: 0
 
         }
 
@@ -74,10 +84,13 @@ export default class PokerView extends Component {
             table.push(deck.pop());
             
             this.setState({
-                deck: [...deck],
+                //deck: [...deck],
                 handA: [...a],
                 handB: [...b],
-                tableCards: [...table]
+                tableCards: [...table],
+                dealt: true,
+                handAValue: handEvaluator([...a], [...table]),
+                handBValue: handEvaluator([...b], [...table])
             });
 
         }
@@ -85,25 +98,30 @@ export default class PokerView extends Component {
 
     table = () => {
 
+        let builder = [];
+
+        for(let i in this.state.tableCards){
+
+            builder.push(
+
+                <>
+                    
+                            <Col><Card>
+                                <CardImg 
+                                
+                                src={`/images/${this.state.tableCards[i]}.svg`} />
+                            </Card></Col>
+                
+                </>
+                
+                    
+
+            )
+        }
+
         return (
             <>
-                
-                    <Col><Card>
-                            <CardImg src={`/images/${this.state.tableCards[0]}.svg`} />
-                        </Card></Col>
-                    <Col><Card>
-                            <CardImg src={`/images/${this.state.tableCards[1]}.svg`} />
-                        </Card></Col>
-                    <Col><Card>
-                            <CardImg src={`/images/${this.state.tableCards[2]}.svg`} />
-                        </Card></Col>
-                    <Col><Card>
-                            <CardImg src={`/images/${this.state.tableCards[3]}.svg`} />
-                        </Card></Col>
-                    <Col><Card>
-                            <CardImg src={`/images/${this.state.tableCards[4]}.svg`} />
-                        </Card></Col>
-                      
+                    {builder}
 
             </>
 
@@ -162,10 +180,14 @@ export default class PokerView extends Component {
                     <Row>
                         <Col>
                             <this.leftHand />
+                            <p>{(this.state.dealt) ? this.state.handAValue : 0}</p>
+                            <p>{winsOrLoses(this.state.handAValue,this.state.handBValue)}</p>
                         </Col>
                         <this.table />
                         <Col>
                             <this.rightHand />
+                            <p>{(this.state.dealt) ? this.state.handBValue : 0}</p>
+                            <p>{winsOrLoses(this.state.handBValue, this.state.handAValue)}</p>
                         </Col>
                         
                     </Row>
