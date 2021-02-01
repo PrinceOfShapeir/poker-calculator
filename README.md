@@ -14,3 +14,6 @@ The way to compare the output of handEvaluator is as follows:
 hands = a,b,c,d, where each hand includes two hidden cards, and five table cards. The handEvaluator returns the maximum value given any set of seven cards. 
 The winning hand is the maximum of (handEvaluator(a),handEvaluator(b)...)
 
+
+
+** Cards obtained from https://tekeye.uk/playing_cards/svg-playing-cards 

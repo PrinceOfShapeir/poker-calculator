@@ -279,27 +279,34 @@ function pairEvaluator (ray) {
 		
 
 		scores = scores.filter((num)=>{return num!=max});
-		return ((Math.max(...scores)>0) ? max - max%1000 + kickerCalculator((max%1000)+13) + Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) 
-		: max - max%1000 + kickerCalculator((max%1000)+13)+ (()=>{
-			array = [...ray].filter((num)=>{return thirteen(num)!=max%1000});
-			let bigTwo = 0;
-			for(let i = 0; i<2; i++){
-				bigTwo += kickerCalculator(Math.max(...array));
-				array = array.filter(val=>val!=Math.max(...array));
-			}
-			return bigTwo;
+		return ((Math.max(...scores)>0) ? 
+			max - max%1000 + kickerCalculator((max%1000)+13) + Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) 
+			: max - max%1000 + kickerCalculator((max%1000)+13)+ (()=>{
+				array = [...ray].filter((num)=>{return thirteen(num)!=max%1000}).map(val=>thirteen(val));
+				let bigTwo = 0;
+				for(let i = 0; i<2; i++){
+					bigTwo += kickerCalculator(Math.max(...array));
+					array = array.filter(val=>val!=Math.max(...array));
+				}
+				return bigTwo;
 			})())//creates a + 5000 hand with highest pair or adds the top 2 kickers
 		
 	}
 	else if(max>2000){
 		scores = scores.filter((num)=>{return num!=max});	
-		return ((Math.max(...scores)>0) ? max - max%1000 + kickerCalculator((max%1000)+13) + kickerCalculator((Math.max(...scores)%1000)+13) + Math.max(...scores) - 1500 - Math.max(...scores)%1000
+		return ((Math.max(...scores)>0) ? 
+		max - max%1000 + kickerCalculator((max%1000)+13) + kickerCalculator((Math.max(...scores)%1000)+13) + Math.max(...scores) - 1500 - Math.max(...scores)%1000
+		+ kickerCalculator(Math.max(
+			...ray.map(val=>thirteen(val)).filter(val=>val!=max%1000 && val!=Math.max(...scores)%1000)
+			
+			//.filter(val=>val!=max%1000 && val!=Math.max(...scores)%1000)
+		))
 		: max -max%1000 + kickerCalculator((max%1000)+13) + (()=>{
 			array = [...ray].filter((num)=>{return thirteen(num)!=max%1000});
 				let bigThree = 0;
 				for(let i = 0; i<3; i++){
-					bigThree += kickerCalculator(Math.max(...array));
-					array = array.filter(num => thirteen(num) != thirteen(Math.max(...array)));
+					bigThree += kickerCalculator(Math.max([...array].map(val=>thirteen(val))));
+					array = array.filter(num => thirteen(num) != (Math.max([...array].map(val=>thirteen(val)))));
 					
 				}
 				return bigThree;
@@ -393,7 +400,7 @@ while(array.length>5){
 
 //all the work we did above lets us easily compare by hand value
 //every function always returns the highest possible hand by that method
-export function handEvaluator (array){
+function handEvaluator (array){
 	
 	let hand = [];
 	hand[hand.length] = flushFinder(array)||0;
@@ -410,8 +417,8 @@ export function handEvaluator (array){
 
 
 //console.log("Kicker finds: " + kickerCalculator(6));
-const thisarray = [35,51,32,48,28,14,40];//console.log("Highcard = " + highCard(thisarray));
-//35,51,32,48,28,14,40 second hand [6,19,32,48,28,14,40]
+const thisarray = [33,26,32,7,14,9,45];//console.log("Highcard = " + highCard(thisarray));
+//33,26,32,7,14,9,45 second hand [6,19,32,48,28,14,40]
 console.log("handevaluator: " + handEvaluator(thisarray)); //no longer throwing errors
 //console.log(kickerCalculator(thisarray)); //this needs a single int input...
 //console.log(pairFinder(thisarray));

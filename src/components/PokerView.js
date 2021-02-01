@@ -113,7 +113,7 @@ export default class PokerView extends Component {
                             <Col><Card>
                                 <CardImg 
                                 
-                                src={`/images/${this.state.tableCards[i]}.svg`} />
+                                src={`./images/${this.state.tableCards[i]}.svg`} />
                             </Card><p>{(this.state.dealt) ? this.state.tableCards[i] : ""}</p></Col>
                 
                 </>
@@ -139,10 +139,10 @@ export default class PokerView extends Component {
             <>
 
             <Card>
-                <CardImg src={`/images/${this.state.handA[0]}.svg`} />
+                <CardImg src={`./images/${this.state.handA[0]}.svg`} />
             </Card>
             <Card>
-                <CardImg src={`/images/${this.state.handA[1]}.svg`} />
+                <CardImg src={`./images/${this.state.handA[1]}.svg`} />
             </Card>
             
             </>
@@ -157,10 +157,10 @@ export default class PokerView extends Component {
             <>
 
             <Card>
-                <CardImg src={`/images/${this.state.handB[0]}.svg`} />
+                <CardImg src={`./images/${this.state.handB[0]}.svg`} />
             </Card>
             <Card>
-                <CardImg src={`/images/${this.state.handB[1]}.svg`} />
+                <CardImg src={`./images/${this.state.handB[1]}.svg`} />
             </Card>
             
             </>
