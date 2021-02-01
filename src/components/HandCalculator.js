@@ -301,16 +301,9 @@ function pairEvaluator (ray) {
 			
 			//.filter(val=>val!=max%1000 && val!=Math.max(...scores)%1000)
 		))
-		: max -max%1000 + kickerCalculator((max%1000)+13) + (()=>{
-			array = [...ray].filter((num)=>{return thirteen(num)!=max%1000});
-				let bigThree = 0;
-				for(let i = 0; i<3; i++){
-					bigThree += kickerCalculator(Math.max([...array].map(val=>thirteen(val))));
-					array = array.filter(num => thirteen(num) != (Math.max([...array].map(val=>thirteen(val)))));
-					
-				}
-				return bigThree;
-			})())//2p evaluates to 2500 + remainder or + 3 kickers
+		: max -max%1000 + kickerCalculator((max%1000)+13) + highCard(ray)
+		
+		)//2p evaluates to 2500 + remainder or + 3 kickers
 	
 	}
 	
@@ -417,8 +410,8 @@ function handEvaluator (array){
 
 
 //console.log("Kicker finds: " + kickerCalculator(6));
-const thisarray = [33,26,32,7,14,9,45];//console.log("Highcard = " + highCard(thisarray));
-//33,26,32,7,14,9,45 second hand [6,19,32,48,28,14,40]
+const thisarray = [33,23,4,27,26,12,16];//console.log("Highcard = " + highCard(thisarray));
+//second hand
 console.log("handevaluator: " + handEvaluator(thisarray)); //no longer throwing errors
 //console.log(kickerCalculator(thisarray)); //this needs a single int input...
 //console.log(pairFinder(thisarray));
