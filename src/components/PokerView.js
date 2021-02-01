@@ -55,7 +55,11 @@ export default class PokerView extends Component {
 
         }
 
-
+        this.showDebug = () => {
+            this.setState({
+                dealt: !this.state.dealt
+            })
+        }
 
         this.dealHand = () => {
 
@@ -83,14 +87,14 @@ export default class PokerView extends Component {
             //river
             table.push(deck.pop());
             
+            console.log([...a, ...table]);
             this.setState({
                 //deck: [...deck],
                 handA: [...a],
                 handB: [...b],
                 tableCards: [...table],
-                dealt: true,
-                handAValue: handEvaluator([...a], [...table]),
-                handBValue: handEvaluator([...b], [...table])
+                handAValue: handEvaluator([...a, ...table]),
+                handBValue: handEvaluator([...b, ...table])
             });
 
         }
@@ -110,7 +114,7 @@ export default class PokerView extends Component {
                                 <CardImg 
                                 
                                 src={`/images/${this.state.tableCards[i]}.svg`} />
-                            </Card></Col>
+                            </Card><p>{(this.state.dealt) ? this.state.tableCards[i] : ""}</p></Col>
                 
                 </>
                 
@@ -176,22 +180,30 @@ export default class PokerView extends Component {
                     <Button onClick={this.dealHand}>
                         Shuffle and Deal.
                     </Button>
+                    
                 <Container fluid>
                     <Row>
                         <Col>
                             <this.leftHand />
-                            <p>{(this.state.dealt) ? this.state.handAValue : 0}</p>
+                            <p>{(this.state.dealt) ? this.state.handAValue : ""}</p>
+                            <p>{(this.state.dealt) ? this.state.handA.toString() : ""}</p>
                             <p>{winsOrLoses(this.state.handAValue,this.state.handBValue)}</p>
                         </Col>
                         <this.table />
                         <Col>
                             <this.rightHand />
-                            <p>{(this.state.dealt) ? this.state.handBValue : 0}</p>
+                            <p>{(this.state.dealt) ? this.state.handBValue : ""}</p>
+                            <p>{(this.state.dealt) ? this.state.handB.toString() : ""}</p>
                             <p>{winsOrLoses(this.state.handBValue, this.state.handAValue)}</p>
                         </Col>
                         
                     </Row>
-                    
+
+                    <p>See an error? Please copy the debug info, and file a report on our <a href="https://github.com/PrinceOfShapeir/poker-calculator">Github page.</a></p>
+                    <Button onClick={this.showDebug}>
+                        Show debug info
+                    </Button>
+
                 </Container>
                 
                 
