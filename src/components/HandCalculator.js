@@ -180,9 +180,48 @@ function straightFinder(ray) {
 
 function newPairFinder (ray) {
 
-	let array = ray.map(val => thirteen(val)).sort();
-
+	let array = ray.map(val => thirteen(val)).sort().reverse();
 	let count = 0;
+	let max = 0;
+	for(let i = 0; i<array.length; i++){
+
+		if(i<array.length) {
+
+			if(array[i]===array[i+1]){
+				count++;
+				max = array[i];
+			} else if (count>0) {
+				i = array.length;
+			}
+
+		}
+
+	}
+
+
+	console.log(count);
+
+
+	switch(count) {
+
+		case 1: 
+			return max + 2000;
+		case 2: 
+			return max + 3000;
+		case 3: 
+			return max + 6000;
+		default:
+			return false;
+
+	}
+
+	console.log(array + "is false??");
+
+	return false;
+
+
+	
+/*
 	for(let i = array.length-1; i>0; i--){
 		if(array[i]===array[i-1]){
 			count++;
@@ -200,17 +239,17 @@ function newPairFinder (ray) {
 				default: return false;
 			}
 
-		}
-	}
+		} else console.log(array[i] + " != " + array[i-1])
+		
+	}*/
 
-	return false;
-
+	
 	//pairevaluator is expecting an unordered list of pairs
 	//we can just greedily return the first found pair
 
 
 }
-
+/*
 function pairFinder (ray) {
 	
 	let array = [...ray]; //we mutate this
@@ -229,7 +268,7 @@ function pairFinder (ray) {
 							
 							return ((()=>{for(j;j<array.length;j++){if(thirteen(array[i])==thirteen(array[j])){
 								//only higher quads beat
-								return thirteen(array[i]) + 6000 /*kickerCalculator(Math.max(array.filter((num)=>{thirteen(num)!=thirteen(array[i])})))*/;//quads
+								return thirteen(array[i]) + 6000 //kickerCalculator(Math.max(array.filter((num)=>{thirteen(num)!=thirteen(array[i])})));//quads
 							}
 								} return false;
 								
@@ -244,7 +283,7 @@ function pairFinder (ray) {
 		}
 	}
 	return false;
-}
+}*/
 
 //second step is to filter the remaining cards, then run pairFinder on them again, until no cards remain or it returns less than a pair.
 
@@ -257,10 +296,11 @@ function pairEvaluator (ray) {
 	scores[0] = newPairFinder(array) || 0;
 	
 	if(scores[0]>0){ //pairfinder returned a pair
-		
-		array = array.filter((num)=>{return thirteen(num)!=scores[0]%1000});
-		
+			//console.log(array);
+		array = array.filter(num=>thirteen(num)!=scores[0]%1000);
+			//console.log(array);
 			scores[1] = newPairFinder(array) || 0;
+
 			if(scores[1]>0){
 					array = array.filter(num=>thirteen(num)!=scores[1]%1000);
 					scores[2] = newPairFinder(array) || 0;
@@ -277,10 +317,11 @@ function pairEvaluator (ray) {
 	}
 	else if(max>3000){
 		
-
-		scores = scores.filter((num)=>{return num!=max});
+		console.log(scores);
+		scores = scores.filter(num=>num!=max);
 		return ((Math.max(...scores)>0) ? 
-			max - max%1000 + kickerCalculator((max%1000)+13) + Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) 
+			max - max%1000 + kickerCalculator((max%1000)+13) * 3 
+			+ Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) * 2 -1000
 			: max - max%1000 + kickerCalculator((max%1000)+13)+ (()=>{
 				array = [...ray].filter((num)=>{return thirteen(num)!=max%1000}).map(val=>thirteen(val));
 				let bigTwo = 0;
@@ -294,14 +335,30 @@ function pairEvaluator (ray) {
 	}
 	else if(max>2000){
 		scores = scores.filter((num)=>{return num!=max});	
-		return ((Math.max(...scores)>0) ? 
-		max - max%1000 + kickerCalculator((max%1000)+13) + kickerCalculator((Math.max(...scores)%1000)+13) + Math.max(...scores) - 1500 - Math.max(...scores)%1000
+		let secondPair = Math.max(...scores) | 0;
+		return ((secondPair>0) ? 
+
+
+			max - max%1000 + secondPair - secondPair%1000 - 1500 +
+			(kickerCalculator(max%1000)) * 49*21 +
+			(kickerCalculator(secondPair%1000)) *49*28 +
+			
+			kickerCalculator(
+				Math.max(
+					...[...ray].map(val=>thirteen(val)).filter(val=>val!=max%1000&&val!=secondPair%1000)
+					)
+				)
+			
+
+		/*
+		max - max%1000 + kickerCalculator((max%1000)+13) * 2 + kickerCalculator((Math.max(...scores)%1000)+13) * 2  + Math.max(...scores) - 1500 - Math.max(...scores)%1000
 		+ kickerCalculator(Math.max(
 			...ray.map(val=>thirteen(val)).filter(val=>val!=max%1000 && val!=Math.max(...scores)%1000)
 			
 			//.filter(val=>val!=max%1000 && val!=Math.max(...scores)%1000)
-		))
-		: max -max%1000 + kickerCalculator((max%1000)+13) + highCard(ray)
+		))*/
+		: max + highCard(ray) //fix this later
+			
 		
 		)//2p evaluates to 2500 + remainder or + 3 kickers
 	
@@ -341,7 +398,10 @@ function thirteen (number) {
 
 function highCard (input){
 
-	let array = [...input];
+	//posible future change: 
+	// * add new default param, len = 5
+	
+	
 
 {
 /*
@@ -370,14 +430,17 @@ while(array.length>5){
 }*/ 
 
 }
-	array = array.map(val=>thirteen(val)).sort();
-	array.shift(); array.shift();
+	let array = [...input].map(val=>thirteen(val)).sort((a,b)=>a-b);
+	while(array.length>5){
+		array.shift();
+	}
 
-
+	return array.reduce((acc, val)=>acc+kickerCalculator(val));
+}
 
 
 //scope for j
-	{let j = 0;
+	/*{let j = 0;
 		let summer = (array) => {
 
 			for(let i = 0; i<array.length;i++){
@@ -389,11 +452,11 @@ while(array.length>5){
 			return summer(array);
 
 		}
-	}
+	}*/
 
 //all the work we did above lets us easily compare by hand value
 //every function always returns the highest possible hand by that method
-function handEvaluator (array){
+ export function handEvaluator (array){
 	
 	let hand = [];
 	hand[hand.length] = flushFinder(array)||0;
@@ -406,17 +469,45 @@ function handEvaluator (array){
 	
 	
 }
-
-
+/*
+function fiveLowest (array) {
+	let temp = [...array];
+	while(temp.length>5){
+		temp.shift();
+	}
+	return temp;
+}*/
 
 //console.log("Kicker finds: " + kickerCalculator(6));
-const thisarray = [33,23,4,27,26,12,16];//console.log("Highcard = " + highCard(thisarray));
+const thisarray = [44,31,42,7,12,51,3];//console.log("Highcard = " + highCard(thisarray));
 //second hand
-console.log("handevaluator: " + handEvaluator(thisarray)); //no longer throwing errors
+console.log("handevaluator: " + handEvaluator(thisarray));
+//console.log("highCard " + highCard(thisarray));
+console.log("handevaluator: " + handEvaluator([45,37,42,7,12,51,3])); //no longer throwing errors
+console.log("pairevaluator: " + pairEvaluator(thisarray));
+console.log("pairevaluator: " + pairEvaluator([45,37,42,7,12,51,3]));
+//console.log("highCard " + highCard([21,45,36,38,29,18,26]));	
+
+console.log("winner is " + (handEvaluator(thisarray)>handEvaluator([45,37,42,7,12,51,3])));
+
+console.log(kickerCalculator(7));
+console.log(kickerCalculator(37));
+console.log((kickerCalculator(13)+kickerCalculator(5))-(kickerCalculator(13)+kickerCalculator(3)));
+//console.log("raw kickers yield: ")
+//console.log(thisarray.map(val=>thirteen(val)).sort());
+//console.log(fiveLowest(thisarray.map(val=>thirteen(val)).sort()).reduce((acc,val)=>acc+kickerCalculator(val)));
+//console.log(fiveLowest(thisarray.map(val=>thirteen(val)).sort()).map(val=>`${val} : ${kickerCalculator(val)}`));
+//console.log([37,3,23,48,46,52,13].map(val=>thirteen(val)).sort());
+//console.log(fiveLowest([37,3,23,48,46,52,13].map(val=>thirteen(val)).sort()).reduce((acc,val)=>acc+kickerCalculator(val)));
+//console.log(fiveLowest([37,3,23,48,46,52,13].map(val=>thirteen(val)).sort()).map(val=>`${val} : ${kickerCalculator(val)}`));
 //console.log(kickerCalculator(thisarray)); //this needs a single int input...
+
 //console.log(pairFinder(thisarray));
-console.log(pairEvaluator(thisarray));
-console.log("newpairfainder" + newPairFinder(thisarray));
+//console.log(pairEvaluator(thisarray));
+//console.log("newpairfainder" + newPairFinder(thisarray));
+//console.log("newpairfainder" + newPairFinder([40,27,35,1]));
+//console.log([40,27,35,1].map(a=>thirteen(a)));
+//console.log("newpairfainder" + newPairFinder([40,27,35,1].map(a=>thirteen(a))));
 //console.log(flushFinder(thisarray));//basically works
 //console.log(straightFinder(thisarray)); //fixed
 
