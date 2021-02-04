@@ -377,8 +377,8 @@ function pairEvaluator (ray) {
 
 
 			max - max%1000 + secondPair - secondPair%1000 - 1500 +
-			(kickerCalculator(max%1000)) * 49*21 +
-			(kickerCalculator(secondPair%1000)) *49*28 +
+			(kickerCalculator(max%1000)) * 49*28 +
+			(kickerCalculator(secondPair%1000)) *49*21 +
 			
 			kickerCalculator(
 				Math.max(
@@ -394,7 +394,7 @@ function pairEvaluator (ray) {
 			
 			//.filter(val=>val!=max%1000 && val!=Math.max(...scores)%1000)
 		))*/
-		: max + highCard(ray) //fix this later
+		: max - max%1000 + max%1000*7 +  highCard([max%1000, max%1000, ...resizer([...ray].map(val=>thirteen(val)).filter(val=>val!=max%1000), 3)])//fix this now
 			
 		
 		)//2p evaluates to 2500 + remainder or + 3 kickers
@@ -493,7 +493,7 @@ while(array.length>5){
 
 //all the work we did above lets us easily compare by hand value
 //every function always returns the highest possible hand by that method
-  function handEvaluator (array){
+ export function handEvaluator (array){
 	
 	let hand = [];
 	hand[hand.length] = flushFinder(array)||0;
@@ -506,6 +506,17 @@ while(array.length>5){
 	
 	
 }
+
+function resizer (array, newLength) {
+	let output = [...array].sort((a,b)=>a-b);
+
+	while(output.length>newLength){
+		output.shift();
+	}
+
+	return output;
+}
+
 /*
 function fiveLowest (array) {
 	let temp = [...array];
@@ -516,19 +527,19 @@ function fiveLowest (array) {
 }*/
 
 //console.log("Kicker finds: " + kickerCalculator(6));
-const thisarray = [8,49,35,11,3,33,21];//console.log("Highcard = " + highCard(thisarray));
+const thisarray = [2,40,22,12,52,24,14];//console.log("Highcard = " + highCard(thisarray));
 //second hand
 console.log("handevaluator: " + handEvaluator(thisarray));
-console.log(straightFinder(thisarray));
+//console.log(straightFinder(thisarray));
 //console.log(newStraightFinder(thisarray));
 //console.log("highCard " + highCard(thisarray));
-console.log("handevaluator: " + handEvaluator([9,42,35,11,3,33,21])); //no longer throwing errors
-console.log(straightFinder([9,42,35,11,3,33,21]));
+console.log("handevaluator: " + handEvaluator([6,4,40,12,52,24,14])); //no longer throwing errors
+//console.log(straightFinder([9,42,35,11,3,33,21]));
 //console.log("pairevaluator: " + pairEvaluator(thisarray));
 //console.log("pairevaluator: " + pairEvaluator([45,37,42,7,12,51,3]));
 //console.log("highCard " + highCard([21,45,36,38,29,18,26]));	
 
-console.log("winner is " + (handEvaluator(thisarray)>handEvaluator([45,37,42,7,12,51,3])));
+console.log("winner is " + (handEvaluator(thisarray)>handEvaluator([6,43,40,12,52,24,14])));
 
 //console.log(kickerCalculator(7));
 //console.log(kickerCalculator(37));
