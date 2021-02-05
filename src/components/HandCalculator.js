@@ -357,8 +357,10 @@ function pairEvaluator (ray) {
 		console.log(scores);
 		scores = scores.filter(num=>num!=max);
 		return ((Math.max(...scores)>0) ? 
+			
 			max - max%1000 + kickerCalculator((max%1000)+13) * 3 
-			+ Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) * 2 -1000
+			+ Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) * 2
+			+ (Math.max(...scores)>=3000) ? -1000 : 0
 			: max - max%1000 + kickerCalculator((max%1000)+13)+ (()=>{
 				array = [...ray].filter((num)=>{return thirteen(num)!=max%1000}).map(val=>thirteen(val));
 				let bigTwo = 0;
