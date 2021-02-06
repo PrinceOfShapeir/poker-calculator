@@ -172,7 +172,10 @@ export default class PokerView extends Component {
 
     render() {
             return (
-                <div className="text-center">
+                <div className="text-center" style={{
+                    backgroundColor: "#4caf50",
+                    border: "thick solid #A0522D"
+                }}>
                     <h1>Compare two Poker Hands</h1>
 
                     <p>Deal two poker hands and then guess which one is the winner.</p>

@@ -495,7 +495,7 @@ while(array.length>5){
 
 //all the work we did above lets us easily compare by hand value
 //every function always returns the highest possible hand by that method
- export function handEvaluator (array){
+export function handEvaluator (array){
 	
 	let hand = [];
 	hand[hand.length] = flushFinder(array)||0;
