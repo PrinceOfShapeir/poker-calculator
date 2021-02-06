@@ -174,7 +174,9 @@ export default class PokerView extends Component {
             return (
                 <div className="text-center" style={{
                     backgroundColor: "#4caf50",
-                    border: "thick solid #A0522D"
+                    border: "thick solid #A0522D",
+                    minHeight: "100vh",
+                    height: '100%'
                 }}>
                     <h1>Compare two Poker Hands</h1>
 
