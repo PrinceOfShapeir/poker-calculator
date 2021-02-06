@@ -49,15 +49,57 @@ export default class PokerView extends Component {
             rightWins: 0,
             ties: 0,
             deck: fillDeck(),
-            dealt: false,
+            debug: false,
             handAValue: 0,
-            handBValue: 0
+            handBValue: 0,
+            flop: false,
+            turn: false,
+            river: false,
+            displayCards: false, 
+            dealt: false,
+            revealRight: false,
+            revealLeft: false
 
         }
 
         this.showDebug = () => {
             this.setState({
-                dealt: !this.state.dealt
+                debug: !this.state.debug
+            })
+        }
+        this.revealAll = () => {
+            this.setState({
+                revealLeft: true,
+                revealRight: true,
+                flop: true,
+                turn: true,
+                river: true
+            })
+        }
+
+        this.revealLeft = () => {
+            this.setState({
+                revealLeft: !this.state.revealLeft
+            })
+        }
+        this.revealRight = () => {
+            this.setState({
+                revealRight: !this.state.revealRight
+            })
+        }
+        this.flopCards = () =>{
+            this.setState({
+                flop: !this.state.flop
+            })
+        }
+        this.turnCards = () =>{
+            this.setState({
+                turn: !this.state.turn
+            })
+        }
+        this.riverCards = () =>{
+            this.setState({
+                river: !this.state.river
             })
         }
 
@@ -94,7 +136,13 @@ export default class PokerView extends Component {
                 handB: [...b],
                 tableCards: [...table],
                 handAValue: handEvaluator([...a, ...table]),
-                handBValue: handEvaluator([...b, ...table])
+                handBValue: handEvaluator([...b, ...table]),
+                dealt: true,
+                flop: false,
+                river: false,
+                turn: false, 
+                revealRight: false,
+                revealLeft: false
             });
 
         }
@@ -113,8 +161,8 @@ export default class PokerView extends Component {
                             <Col><Card>
                                 <CardImg 
                                 
-                                src={`./images/${this.state.tableCards[i]}.svg`} />
-                            </Card><p>{(this.state.dealt) ? this.state.tableCards[i] : ""}</p></Col>
+                                src={((i<=2&&this.state.flop)||(i<=3&&this.state.turn)||(i<=4&&this.state.river)) ? `./images/${this.state.tableCards[i]}.svg` : `./images/53.svg`} />
+                            </Card><p>{(this.state.debug) ? this.state.tableCards[i] : ""}</p></Col>
                 
                 </>
                 
@@ -137,12 +185,12 @@ export default class PokerView extends Component {
 
         return (
             <>
-
+           
             <Card>
-                <CardImg src={`./images/${this.state.handA[0]}.svg`} />
+                <CardImg src={(this.state.revealLeft) ? `./images/${this.state.handA[0]}.svg` : './images/53.svg'} />
             </Card>
             <Card>
-                <CardImg src={`./images/${this.state.handA[1]}.svg`} />
+                <CardImg src={(this.state.revealLeft) ? `./images/${this.state.handA[1]}.svg` : './images/53.svg'} />
             </Card>
             
             </>
@@ -156,11 +204,12 @@ export default class PokerView extends Component {
         return (
             <>
 
+            
             <Card>
-                <CardImg src={`./images/${this.state.handB[0]}.svg`} />
+                <CardImg src={(this.state.revealRight) ? `./images/${this.state.handB[0]}.svg` : './images/53.svg' } />
             </Card>
             <Card>
-                <CardImg src={`./images/${this.state.handB[1]}.svg`} />
+                <CardImg src={(this.state.revealRight) ? `./images/${this.state.handB[1]}.svg` : './images/53.svg'} />
             </Card>
             
             </>
@@ -185,21 +234,27 @@ export default class PokerView extends Component {
                     <Button onClick={this.dealHand}>
                         Shuffle and Deal.
                     </Button>
-                    
+                    <>{(this.state.dealt&&!this.state.flop) ? <Button onClick={this.flopCards}>Reveal Flop</Button> : "" }</>
+                    <>{(this.state.dealt&&this.state.flop&&!this.state.turn) ? <Button onClick={this.turnCards}>Reveal Turn</Button> : "" }</>
+                    <>{(this.state.dealt&&this.state.turn&&!this.state.river) ? <Button onClick={this.riverCards}>Reveal River</Button> : "" }</>
+            
+
                 <Container fluid>
                     <Row>
                         <Col>
                             <this.leftHand />
-                            <p>{(this.state.dealt) ? this.state.handAValue : ""}</p>
-                            <p>{(this.state.dealt) ? this.state.handA.toString() : ""}</p>
-                            <p>{winsOrLoses(this.state.handAValue,this.state.handBValue)}</p>
+                            <Button onClick={this.revealLeft}>Reveal Hand</Button>
+                            <p>{(this.state.debug) ? this.state.handAValue : ""}</p>
+                            <p>{(this.state.debug) ? this.state.handA.toString() : ""}</p>
+                            <p>{(this.state.river) ? winsOrLoses(this.state.handAValue,this.state.handBValue) : ""}</p>
                         </Col>
                         <this.table />
                         <Col>
                             <this.rightHand />
-                            <p>{(this.state.dealt) ? this.state.handBValue : ""}</p>
-                            <p>{(this.state.dealt) ? this.state.handB.toString() : ""}</p>
-                            <p>{winsOrLoses(this.state.handBValue, this.state.handAValue)}</p>
+                            <Button onClick={this.revealRight}>Reveal Hand</Button>
+                            <p>{(this.state.debug) ? this.state.handBValue : ""}</p>
+                            <p>{(this.state.debug) ? this.state.handB.toString() : ""}</p>
+                            <p>{(this.state.river) ? winsOrLoses(this.state.handBValue, this.state.handAValue) : ""}</p>
                         </Col>
                         
                     </Row>
@@ -208,6 +263,7 @@ export default class PokerView extends Component {
                     <Button onClick={this.showDebug}>
                         Show debug info
                     </Button>
+                    <>{((!this.state.revealLeft||!this.state.revealRight||!this.state.flop||!this.state.turn||!this.state.river)&&this.state.dealt) ? <Button onClick={this.revealAll}>Reveal All</Button> : ""}</>
 
                 </Container>
                 

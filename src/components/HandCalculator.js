@@ -360,7 +360,7 @@ function pairEvaluator (ray) {
 			
 			max - max%1000 + kickerCalculator((max%1000)+13) * 3 
 			+ Math.max(...scores) - Math.max(...scores)%1000 + kickerCalculator((Math.max(...scores)%1000)+13) * 2
-			+ (Math.max(...scores)>=3000) ? -1000 : 0
+			+ ((Math.max(...scores)>=3000) ? -1000 : 0)
 			: max - max%1000 + kickerCalculator((max%1000)+13)+ (()=>{
 				array = [...ray].filter((num)=>{return thirteen(num)!=max%1000}).map(val=>thirteen(val));
 				let bigTwo = 0;
@@ -495,7 +495,7 @@ while(array.length>5){
 
 //all the work we did above lets us easily compare by hand value
 //every function always returns the highest possible hand by that method
-export function handEvaluator (array){
+function handEvaluator (array){
 	
 	let hand = [];
 	hand[hand.length] = flushFinder(array)||0;
@@ -529,19 +529,19 @@ function fiveLowest (array) {
 }*/
 
 //console.log("Kicker finds: " + kickerCalculator(6));
-const thisarray = [2,40,22,12,52,24,14];//console.log("Highcard = " + highCard(thisarray));
+const thisarray = [17,22,43,35,23,30,34];//console.log("Highcard = " + highCard(thisarray));
 //second hand
 console.log("handevaluator: " + handEvaluator(thisarray));
 //console.log(straightFinder(thisarray));
 //console.log(newStraightFinder(thisarray));
 //console.log("highCard " + highCard(thisarray));
-console.log("handevaluator: " + handEvaluator([6,4,40,12,52,24,14])); //no longer throwing errors
+console.log("handevaluator: " + handEvaluator([1,24,43,35,23,30,34])); //no longer throwing errors
 //console.log(straightFinder([9,42,35,11,3,33,21]));
-//console.log("pairevaluator: " + pairEvaluator(thisarray));
+console.log("pairevaluator: " + pairEvaluator(thisarray));
 //console.log("pairevaluator: " + pairEvaluator([45,37,42,7,12,51,3]));
 //console.log("highCard " + highCard([21,45,36,38,29,18,26]));	
 
-console.log("winner is " + (handEvaluator(thisarray)>handEvaluator([6,43,40,12,52,24,14])));
+console.log("winner is " + (handEvaluator(thisarray)>handEvaluator([1,24,43,35,23,30,34])));
 
 //console.log(kickerCalculator(7));
 //console.log(kickerCalculator(37));
