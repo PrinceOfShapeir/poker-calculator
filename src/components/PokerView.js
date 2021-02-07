@@ -263,6 +263,7 @@ export default class PokerView extends Component {
                     <Button onClick={this.showDebug}>
                         Show debug info
                     </Button>
+                    <>{(this.state.debug) ? <Button onClick={navigator.clipboard.writeText(this.state.handA.toString() + "," + this.state.tableCards.toString() + "," + this.state.handB.toString())}>Copy Debug Info</Button> : ""}</>
                     <>{((!this.state.revealLeft||!this.state.revealRight||!this.state.flop||!this.state.turn||!this.state.river)&&this.state.dealt) ? <Button onClick={this.revealAll}>Reveal All</Button> : ""}</>
 
                 </Container>

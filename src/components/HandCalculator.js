@@ -28,6 +28,8 @@
 
 //input format:
 
+export {thirteen, handEvaluator};
+
 function flushFinder (input) {
 	let ray = input.slice();
 	console.log(ray);
