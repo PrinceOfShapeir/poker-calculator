@@ -1,5 +1,6 @@
 {
   "name": "poker-calculator",
+  "short_name": "poker",
   "version": "0.1.0",
   "private": true,
   "homepage": "http://PrinceOfShapeir.github.io/poker-calculator",
