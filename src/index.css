@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@media screen and (orientation: portrait) {
+
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 95vw;
+    min-height: 95%;
+    min-width: 100%;
+    top: 100%;
+    left: 0;
+    overflow-x: visible;
+    position: absolute;
+  }
+
+}
