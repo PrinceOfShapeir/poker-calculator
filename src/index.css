@@ -17,13 +17,14 @@ code {
   html {
     transform: rotate(-90deg);
     transform-origin: left top;
-    width: 100vh;
-    height: 95vw;
-    min-height: 95%;
-    min-width: 100%;
+    min-width: 100vh;
+    min-height: 100vw;
+    height: 100%;
+    width: 100%;
     top: 100%;
     left: 0;
-    overflow-x: visible;
+    overflow-x: auto;
+    overflow-y: scroll;
     position: absolute;
   }
 

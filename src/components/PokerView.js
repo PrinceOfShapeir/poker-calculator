@@ -158,8 +158,10 @@ export default class PokerView extends Component {
 
                 <>
                     
-                            <Col><Card>
+                            <Col><Card onClick={(i<=2) ? this.flopCards : ((i<=3) ? this.turnCards : this.riverCards)}>
                                 <CardImg 
+
+                                
                                 
                                 src={((i<=2&&this.state.flop)||(i<=3&&this.state.turn)||(i<=4&&this.state.river)) ? `./images/${this.state.tableCards[i]}.svg` : `./images/53.svg`} />
                             </Card><p>{(this.state.debug) ? this.state.tableCards[i] +
@@ -187,10 +189,10 @@ export default class PokerView extends Component {
         return (
             <>
            
-            <Card>
+            <Card onClick={this.revealLeft}>
                 <CardImg src={(this.state.revealLeft) ? `./images/${this.state.handA[0]}.svg` : './images/53.svg'} />
             </Card>
-            <Card>
+            <Card onClick={this.revealLeft}>
                 <CardImg src={(this.state.revealLeft) ? `./images/${this.state.handA[1]}.svg` : './images/53.svg'} />
             </Card>
             
@@ -206,10 +208,10 @@ export default class PokerView extends Component {
             <>
 
             
-            <Card>
+            <Card onClick={this.revealRight}>
                 <CardImg src={(this.state.revealRight) ? `./images/${this.state.handB[0]}.svg` : './images/53.svg' } />
             </Card>
-            <Card>
+            <Card onClick={this.revealRight}>
                 <CardImg src={(this.state.revealRight) ? `./images/${this.state.handB[1]}.svg` : './images/53.svg'} />
             </Card>
             
