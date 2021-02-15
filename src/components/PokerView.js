@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {UncontrolledTooltip, Button, Card, CardImg, Figure, Container, Row, Col} from 'reactstrap';
 import {handEvaluator, thirteen} from './HandCalculator';
+
 function fillDeck () {
 
     return new Array(52).fill(0).map((value, index) => index+1);
@@ -158,7 +159,10 @@ export default class PokerView extends Component {
 
                 <>
                     
-                            <Col><Card onClick={(i<=2) ? this.flopCards : ((i<=3) ? this.turnCards : this.riverCards)}>
+                            <Col><Card onClick={(i<=2) ? this.flopCards : ((i<=3) ? this.turnCards : this.riverCards)}
+                            className={(this.state.flop&&i<=2) ? "flipCard" : ((this.state.turn&&i<=3) ? "flipCard" : ((this.state.river&&i<=4) ? "flipCard" : ""))}
+                            
+                            >
                                 <CardImg 
 
                                 
@@ -189,10 +193,14 @@ export default class PokerView extends Component {
         return (
             <>
            
-            <Card onClick={this.revealLeft}>
+            <Card onClick={this.revealLeft}
+                className={(this.state.revealLeft) ? "flipCard" : "" }
+            >
                 <CardImg src={(this.state.revealLeft) ? `./images/${this.state.handA[0]}.svg` : './images/53.svg'} />
             </Card>
-            <Card onClick={this.revealLeft}>
+            <Card onClick={this.revealLeft}
+                className={(this.state.revealLeft) ? "flipCard" : "" }
+                >
                 <CardImg src={(this.state.revealLeft) ? `./images/${this.state.handA[1]}.svg` : './images/53.svg'} />
             </Card>
             
@@ -208,10 +216,14 @@ export default class PokerView extends Component {
             <>
 
             
-            <Card onClick={this.revealRight}>
+            <Card onClick={this.revealRight}
+                className={(this.state.revealRight) ? "flipCard" : "" }
+            >
                 <CardImg src={(this.state.revealRight) ? `./images/${this.state.handB[0]}.svg` : './images/53.svg' } />
             </Card>
-            <Card onClick={this.revealRight}>
+            <Card onClick={this.revealRight}
+                className={(this.state.revealRight) ? "flipCard" : "" }
+                >
                 <CardImg src={(this.state.revealRight) ? `./images/${this.state.handB[1]}.svg` : './images/53.svg'} />
             </Card>
             
