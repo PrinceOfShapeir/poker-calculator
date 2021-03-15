@@ -59,8 +59,15 @@ export default class PokerView extends Component {
             displayCards: false, 
             dealt: false,
             revealRight: false,
-            revealLeft: false
+            revealLeft: false,
+            orientationLocked : false
 
+        }
+
+        this.lockOrientation = () => {
+            this.setState({
+                orientationLocked: true
+            })
         }
 
         this.showDebug = () => {
@@ -242,6 +249,10 @@ export default class PokerView extends Component {
                     minHeight: "100vh",
                     height: '100%'
                 }}>
+                    {(() => {if (!this.state.orientationLocked){
+                        screen.lockOrientation('landscape');
+                        this.lockOrientation();
+                    }})}
                     <h1>Compare two Poker Hands</h1>
 
                     <p>Deal two poker hands and then guess which one is the winner.</p>
@@ -278,7 +289,9 @@ export default class PokerView extends Component {
                             <p>{(this.state.river) ? winsOrLoses(this.state.handBValue, this.state.handAValue) : ""}</p>
                         </Col>
                         
+                        
                     </Row>
+                    </Container>
 
                     <p>See an error? Please copy the debug info, and file a report on our <a href="https://github.com/PrinceOfShapeir/poker-calculator">Github page.</a></p>
                     <Button onClick={this.showDebug}>
@@ -290,7 +303,7 @@ export default class PokerView extends Component {
                     <>{(this.state.debug) ? <Button onClick={navigator.clipboard.writeText(this.state.handA.toString() + "," + this.state.tableCards.toString() + "," + this.state.handB.toString())}>Copy Debug Info</Button> : ""}</>
                     <>{((!this.state.revealLeft||!this.state.revealRight||!this.state.flop||!this.state.turn||!this.state.river)&&this.state.dealt) ? <Button onClick={this.revealAll}>Reveal All</Button> : ""}</>
 
-                </Container>
+                
                 
                 
                 
