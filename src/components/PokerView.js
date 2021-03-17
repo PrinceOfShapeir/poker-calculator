@@ -60,7 +60,8 @@ export default class PokerView extends Component {
             dealt: false,
             revealRight: false,
             revealLeft: false,
-            orientationLocked : false
+            orientationLocked : false,
+            revealWinner: false
 
         }
 
@@ -110,6 +111,11 @@ export default class PokerView extends Component {
                 river: !this.state.river
             })
         }
+        this.revealWinners = () => {
+            this.setState({
+                revealWinner: true
+            })
+        }
 
         this.dealHand = () => {
 
@@ -150,7 +156,8 @@ export default class PokerView extends Component {
                 river: false,
                 turn: false, 
                 revealRight: false,
-                revealLeft: false
+                revealLeft: false,
+                revealWinner: false
             });
 
         }
@@ -188,6 +195,8 @@ export default class PokerView extends Component {
         return (
             <>
                     {builder}
+                   
+                        
 
             </>
 
@@ -267,26 +276,45 @@ export default class PokerView extends Component {
 
                 <Container fluid>
                     <Row>
-                        <Col>
+                        <Col xs="2">
                             <this.leftHand />
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
-                            <p>{(this.state.debug) ? this.state.handAValue : ""}</p>
-                            <p>{(this.state.debug) ? this.state.handA.toString() + 
-                            " (" + 
-                            this.state.handA.map(val => 
-                            thirteen(val+1)).toString() + ")" : ""}</p>
-                            <p>{(this.state.river) ? winsOrLoses(this.state.handAValue,this.state.handBValue) : ""}</p>
+                            
                         </Col>
-                        <this.table />
-                        <Col>
+                        <Col xs="8">
+                        <Row>
+                            <this.table />
+                        </Row>
+                        
+                        <Row style={{fontSize:15}}>
+                            <Col>
+                                <p>{(this.state.debug) ? this.state.handAValue : ""}</p>
+                                <p>{(this.state.debug) ? this.state.handA.toString() + 
+                                " (" + 
+                                this.state.handA.map(val => 
+                                thirteen(val+1)).toString() + ")" : ""}</p>
+                                <p>{(this.state.river&&this.state.revealWinner) ? `Left ${winsOrLoses(this.state.handAValue,this.state.handBValue)}` : ""}</p>
+                                
+                            </Col>
+                            <Col>
+                                <Button onClick={this.revealWinners}>
+                                    Reveal Winner
+                                </Button>
+                            </Col>
+                            <Col>
+                                <p>{(this.state.debug) ? this.state.handBValue : ""}</p>
+                                <p>{(this.state.debug) ? this.state.handB.toString() + 
+                                " (" + this.state.handB.map(val => 
+                                    thirteen(val+1)).toString() + ")" 
+                                    : ""}</p>
+                                <p>{(this.state.river&&this.state.revealWinner) ? `Right ${winsOrLoses(this.state.handBValue, this.state.handAValue)}` : ""}</p>
+                            </Col>
+                        </Row>
+                        </Col>
+                        <Col xs="2">
                             <this.rightHand />
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
-                            <p>{(this.state.debug) ? this.state.handBValue : ""}</p>
-                            <p>{(this.state.debug) ? this.state.handB.toString() + 
-                            " (" + this.state.handB.map(val => 
-                                thirteen(val+1)).toString() + ")" 
-                                : ""}</p>
-                            <p>{(this.state.river) ? winsOrLoses(this.state.handBValue, this.state.handAValue) : ""}</p>
+                            
                         </Col>
                         
                         
