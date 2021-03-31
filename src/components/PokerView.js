@@ -16,8 +16,49 @@ function winsOrLoses (a,b) {
 
 }
 
-function handName (value, determine=false) {
-    const determiner = () => (determiner) ? "a " : "";
+function highCardKicker (hand, table) {
+
+    let value = Math.max(...hand.concat(table).map(val=>thirteen(val)));
+
+
+    switch(value) {
+
+        case 13:
+            return "an Ace "
+        case 12:
+            return "a King "
+        case 11:
+            return "a Queen "
+        case 10:
+            return "a Jack "
+        case 9:
+            return "a Ten "
+        case 8:
+            return "a Nine "
+        case 7:
+            return "an Eight "
+        case 6:
+            return "a Seven "
+        case 5:
+            return "a Six "
+        case 4:
+            return "a Five "
+        case 3:
+            return "a Four "
+        case 2:
+            return "a Three "
+        case 1:
+            return "a Two "
+        default:
+            return "nothing "
+        
+    }
+
+}
+
+
+function handName (value, hand, table, determine=false) {
+    const determiner = () => (determine) ? "a " : "";
 
     if(value>=7000) return determiner() + "Straight Flush";
     else if (value>=6000) return "Four of a Kind";
@@ -27,7 +68,7 @@ function handName (value, determine=false) {
     else if (value>=3000) return "Three of a Kind";
     else if (value>=2500) return "Two Pair";
     else if (value>=2000) return determiner() + "Pair";
-    else return determiner() + "High Card";
+    else return highCardKicker(hand, table) + "High Card";
 }
 
 function shuffleDeck (times, cards) {
@@ -336,7 +377,7 @@ export default class PokerView extends Component {
                                 " (" + 
                                 this.state.handA.map(val => 
                                 thirteen(val+1)).toString() + ")" : ""}</p>
-                                <p>{(this.state.river&&this.state.revealWinner) ? `Left ${winsOrLoses(this.state.handAValue,this.state.handBValue)} with ${handName(this.state.handAValue, true)}!` : ""}</p>
+                                <p>{(this.state.river&&this.state.revealWinner) ? `Left ${winsOrLoses(this.state.handAValue,this.state.handBValue)} with ${handName(this.state.handAValue, this.state.handA, this.state.tableCards, true)}!` : ""}</p>
                                 <p>{(this.state.river&&this.state.revealWinner) ? `Left total wins: ${this.state.leftWins}` : ""}</p>
                                
 
@@ -353,7 +394,7 @@ export default class PokerView extends Component {
                                 " (" + this.state.handB.map(val => 
                                     thirteen(val+1)).toString() + ")" 
                                     : ""}</p>
-                                <p>{(this.state.river&&this.state.revealWinner) ? `Right ${winsOrLoses(this.state.handBValue, this.state.handAValue)} with ${handName(this.state.handBValue, true)}!`: ""}</p>
+                                <p>{(this.state.river&&this.state.revealWinner) ? `Right ${winsOrLoses(this.state.handBValue, this.state.handAValue)} with ${handName(this.state.handBValue, this.state.handB, this.state.tableCards, true)}!`: ""}</p>
                                 <p>{(this.state.river&&this.state.revealWinner) ? `Right total wins: ${this.state.rightWins}` : ""}</p>
                             </Col>
                         </Row>
