@@ -133,9 +133,9 @@ export default class PokerView extends Component {
                     : -1;
                     this.setState({winCounted: true})
 
-                    if(a>0) return this.setState({leftWins: this.state.leftWins + a}), localStorage.setItem("leftWins", this.state.leftWins)
-                    else if(b>0) return this.setState({rightWins: this.state.rightWins + b}), localStorage.setItem("rightWins", this.state.rightWins)
-                    else if(a===b===0) return this.setState({ties: this.state.ties + 1}), localStorage.setItem("ties", this.state.ties)
+                    if(a>0) return localStorage.setItem("leftWins", this.state.leftWins + a), this.setState({leftWins: this.state.leftWins + a})
+                    else if(b>0) return localStorage.setItem("rightWins", this.state.rightWins + b), this.setState({rightWins: this.state.rightWins + b})
+                    else if(a===b===0) return localStorage.setItem("ties", this.state.ties + 1), this.setState({ties: this.state.ties + 1})
 
 
                 } else console.log("Error, non numeric hand value");
