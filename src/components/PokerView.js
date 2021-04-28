@@ -117,7 +117,37 @@ export default class PokerView extends Component {
             revealLeft: false,
             orientationLocked : false,
             revealWinner: false,
-            winCounted: false
+            winCounted: false,
+            chips: [500,500],
+            bets: [0,0]
+
+        }
+
+        this.betHands = (hand, chips) => {
+
+            if(hand===0){
+
+                if(this.state.chips[hand]>=chips) {
+                    return this.setState({
+                        chips: [this.state.chips[hand]-chips, this.state.chips[1]],
+                        bets: [this.state.bets[hand]+chips, this.state.bets[1]]
+                    })
+                }
+
+            } else {
+
+                
+                if(this.state.chips[hand]>=chips) {
+                    return this.setState({
+                        chips: [this.state.chips[0], this.state.chips[hand]-chips],
+                        bets: [this.state.bets[0], this.state.bets[hand]+chips]
+                    })
+                }
+
+
+            }
+
+            
 
         }
 
@@ -133,9 +163,9 @@ export default class PokerView extends Component {
                     : -1;
                     this.setState({winCounted: true})
 
-                    if(a>0) return localStorage.setItem("leftWins", this.state.leftWins + a), this.setState({leftWins: this.state.leftWins + a})
-                    else if(b>0) return localStorage.setItem("rightWins", this.state.rightWins + b), this.setState({rightWins: this.state.rightWins + b})
-                    else if(a===b===0) return localStorage.setItem("ties", this.state.ties + 1), this.setState({ties: this.state.ties + 1})
+                    if(a>0) return localStorage.setItem("leftWins", this.state.leftWins + a), this.setState({leftWins: this.state.leftWins + a}), this.divideChips(0);
+                    else if(b>0) return localStorage.setItem("rightWins", this.state.rightWins + b), this.setState({rightWins: this.state.rightWins + b}), this.divideChips(1);
+                    else if(a===b===0) return localStorage.setItem("ties", this.state.ties + 1), this.setState({ties: this.state.ties + 1}), this.divideChips(-1);
 
 
                 } else console.log("Error, non numeric hand value");
@@ -143,6 +173,23 @@ export default class PokerView extends Component {
 
             }
             
+        }
+
+        this.divideChips = (result) => {
+
+                if(result>=1) return this.setState({
+                    chips: [this.state.chips[0], this.state.chips[1]+this.state.bets.reduce((a,b)=>a+b)],
+                    bets: [0,0]
+                });
+                else if(result===0) return this.setState({
+                    chips: [this.state.chips[0]+this.state.bets.reduce((a,b)=>a+b), this.state.chips[1]],
+                    bets: [0,0]
+                }); else return this.setState({
+                    chips: [this.state.chips[0]+this.state.bets[0], this.state.chips[1] + this.state.bets[1]],
+                    bets: [0,0]
+                })
+
+
         }
 
         this.lockOrientation = () => {
@@ -363,6 +410,8 @@ export default class PokerView extends Component {
                         <Col xs="2">
                             <this.leftHand />
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
+                            <p>{this.state.chips[0]}</p>
+                            <Button onClick={()=>this.betHands(0,5)}>Bet 5 Chips</Button>
                             
                         </Col>
                         <Col xs="8">
@@ -386,6 +435,7 @@ export default class PokerView extends Component {
                                 <Button onClick={this.revealWinners}>
                                     Reveal Winner
                                 </Button>
+                                <p>{this.state.bets.reduce((a,b)=>a+b)}</p>
                                 <p>{(this.state.river&&this.state.revealWinner) ? `Total ties: ${this.state.ties}` : ""}</p>
                             </Col>
                             <Col>
@@ -402,7 +452,8 @@ export default class PokerView extends Component {
                         <Col xs="2">
                             <this.rightHand />
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
-                            
+                            <p>{this.state.chips[1]}</p>
+                            <Button onClick={()=>this.betHands(1,5)}>Bet 5 Chips</Button>
                         </Col>
                         
                         
