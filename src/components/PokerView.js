@@ -192,6 +192,12 @@ export default class PokerView extends Component {
 
         }
 
+        this.fold = (player) => {
+
+            return this.divideChips(player ? 0 : 1);
+
+        }
+
         this.lockOrientation = () => {
             this.setState({
                 orientationLocked: true
@@ -411,6 +417,7 @@ export default class PokerView extends Component {
                             <this.leftHand />
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
                             <p>{this.state.chips[0]}</p>
+                            <Button onClick={()=>this.fold(0)}>Fold</Button>
                             <Button onClick={()=>this.betHands(0,5)}>Bet 5 Chips</Button>
                             
                         </Col>
@@ -453,6 +460,7 @@ export default class PokerView extends Component {
                             <this.rightHand />
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
                             <p>{this.state.chips[1]}</p>
+                            <Button onClick={()=>this.fold(1)}>Fold</Button>
                             <Button onClick={()=>this.betHands(1,5)}>Bet 5 Chips</Button>
                         </Col>
                         
