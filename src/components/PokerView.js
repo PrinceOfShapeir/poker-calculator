@@ -418,6 +418,16 @@ export default class PokerView extends Component {
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
                             <p>{this.state.chips[0]}</p>
                             <Button onClick={()=>this.fold(0)}>Fold</Button>
+                            <Button onClick={()=>{
+
+                                if(this.state.bets[1]>this.state.bets[0]) {
+
+                                    this.betHands(0, this.state.bets[1]-this.state.bets[0]);
+
+                                }
+
+
+                            }}>{(this.state.bets[1]>this.state.bets[0]) ? `Call ${this.state.bets[1]-this.state.bets[0]}` : "Check"}</Button>
                             <Button onClick={()=>this.betHands(0,5)}>Bet 5 Chips</Button>
                             
                         </Col>
@@ -461,6 +471,16 @@ export default class PokerView extends Component {
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
                             <p>{this.state.chips[1]}</p>
                             <Button onClick={()=>this.fold(1)}>Fold</Button>
+                            <Button onClick={()=>{
+
+                                if(this.state.bets[0]>this.state.bets[1]) {
+
+                                    this.betHands(1, this.state.bets[0]-this.state.bets[1]);
+
+                                }
+
+
+                            }}>{(this.state.bets[0]>this.state.bets[1]) ? `Call ${this.state.bets[0]-this.state.bets[1]}` : "Check"}</Button>
                             <Button onClick={()=>this.betHands(1,5)}>Bet 5 Chips</Button>
                         </Col>
                         
