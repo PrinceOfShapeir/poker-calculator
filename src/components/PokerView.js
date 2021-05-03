@@ -151,6 +151,14 @@ export default class PokerView extends Component {
 
         }
 
+        this.doubleOrNothing = (player) => {
+            let notPlayer = (player) ? 0 : 1;
+            let bets = this.state.bets;
+            if(bets[notPlayer]>bets[player]){
+                return (bets[notPlayer]-bets[player])*2
+            } else return 0;
+        }
+
         this.countWins = () => {
 
             if(this.state.dealt&&this.state.river&&!this.state.winCounted) {
@@ -428,7 +436,7 @@ export default class PokerView extends Component {
 
 
                             }}>{(this.state.bets[1]>this.state.bets[0]) ? `Call ${this.state.bets[1]-this.state.bets[0]}` : "Check"}</Button>
-                            <Button onClick={()=>this.betHands(0,5)}>Bet 5 Chips</Button>
+                            <Button onClick={()=>this.betHands(0,this.doubleOrNothing(0) || 5)}>Bet {this.doubleOrNothing(0) || 5} Chips</Button>
                             
                         </Col>
                         <Col xs="8">
@@ -481,7 +489,7 @@ export default class PokerView extends Component {
 
 
                             }}>{(this.state.bets[0]>this.state.bets[1]) ? `Call ${this.state.bets[0]-this.state.bets[1]}` : "Check"}</Button>
-                            <Button onClick={()=>this.betHands(1,5)}>Bet 5 Chips</Button>
+                            <Button onClick={()=>this.betHands(1,(this.doubleOrNothing(1) || 5 ))}>Bet {(this.doubleOrNothing(1) || 5 )} Chips</Button>
                         </Col>
                         
                         
