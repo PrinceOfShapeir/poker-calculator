@@ -460,7 +460,7 @@ export default class PokerView extends Component {
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
                             <p>{this.state.chips[0]}</p>
 
-                            {(this.state.revealWinner) ? (<></>) : (
+                            {(!this.state.revealWinner) &&  (
                                 <> <Button onClick={()=>this.fold(0)}>Fold</Button>
                                     <Button onClick={()=>{
 
@@ -518,7 +518,7 @@ export default class PokerView extends Component {
                             <this.rightHand />
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
                             <p>{this.state.chips[1]}</p>
-                            {(this.state.revealWinner) ? (<></>) : (
+                            {(!this.state.revealWinner) && (
                                 <>
                                 <Button onClick={()=>this.fold(1)}>Fold</Button>
                                 <Button onClick={()=>{
