@@ -120,7 +120,8 @@ export default class PokerView extends Component {
             winCounted: false,
             chips: [500,500],
             bets: [0,0],
-            betMessage: null
+            betMessage: null,
+            checked: {left: false, right: false}
 
         }
 
@@ -150,6 +151,9 @@ export default class PokerView extends Component {
 
             
 
+        }
+        this.check = (leftOrRight) => {
+            this.setState({checked: {...this.state.checked, [leftOrRight]: !this.state.checked[leftOrRight]}})
         }
         this.checkBets = () => {
 
@@ -219,7 +223,7 @@ export default class PokerView extends Component {
                 if(result>=1) return this.setState({
                     chips: [this.state.chips[0], this.state.chips[1]+this.state.bets.reduce((a,b)=>a+b)],
                     bets: [0,0]
-                });
+                }); 
                 else if(result===0) return this.setState({
                     chips: [this.state.chips[0]+this.state.bets.reduce((a,b)=>a+b), this.state.chips[1]],
                     bets: [0,0]
@@ -336,7 +340,8 @@ export default class PokerView extends Component {
                 revealRight: false,
                 revealLeft: false,
                 revealWinner: false,
-                winCounted: false
+                winCounted: false,
+                checked: {left:  false, right: false}
             });
 
         }
@@ -468,7 +473,7 @@ export default class PokerView extends Component {
 
                                             this.betHands(0, this.state.bets[1]-this.state.bets[0]);
 
-                                        }
+                                        } else this.check("left");
 
                                     }}>{(this.state.bets[1]>this.state.bets[0]) ? `Call ${this.state.bets[1]-this.state.bets[0]}` : "Check"}</Button>
                                     <Button onClick={()=>this.betHands(0,this.doubleOrNothing(0) || 5)}>Bet {this.doubleOrNothing(0) || 5} Chips</Button>
@@ -527,7 +532,7 @@ export default class PokerView extends Component {
 
                                     this.betHands(1, this.state.bets[0]-this.state.bets[1]);
 
-                                }
+                                } else this.check("right");
 
 
                                 }}>{(this.state.bets[0]>this.state.bets[1]) ? `Call ${this.state.bets[0]-this.state.bets[1]}` : "Check"}</Button>
