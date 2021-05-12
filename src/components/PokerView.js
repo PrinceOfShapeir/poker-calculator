@@ -127,6 +127,8 @@ export default class PokerView extends Component {
 
         this.betHands = (hand, chips) => {
 
+            if(this.state.checked.right&&this.state.checked.left) this.setState({checked: {right: false, left: false}})
+
             if(hand===0){
 
                 if(this.state.chips[hand]>=chips) {
@@ -275,17 +277,20 @@ export default class PokerView extends Component {
         }
         this.flopCards = () =>{
             if(this.checkBets()) this.setState({
-                flop: !this.state.flop
+                flop: !this.state.flop,
+                checked: {left:  false, right: false}
             })
         }
         this.turnCards = () =>{
             if(this.checkBets()) this.setState({
-                turn: !this.state.turn
+                turn: !this.state.turn,
+                checked: {left:  false, right: false}
             })
         }
         this.riverCards = () =>{
             if(this.checkBets()) this.setState({
-                river: !this.state.river
+                river: !this.state.river,
+                checked: {left:  false, right: false}
             })
         }
         this.revealWinners = () => {
@@ -449,7 +454,7 @@ export default class PokerView extends Component {
                     }})}
                     <h1>Compare two Poker Hands</h1>
 
-                    <p>{(this.state.checked.right&&this.state.checked.left) ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</p>
+                    <p>{((this.state.checked.right&&this.state.checked.left&&(this.state.bets[0]===this.state.bets[1]))||(this.state.bets[0]===this.state.bets[1]))&&this.state.dealt ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</p>
 
                     <Button onClick={this.dealHand}>
                         Shuffle and Deal.
