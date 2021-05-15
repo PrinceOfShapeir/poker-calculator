@@ -1,4 +1,5 @@
 //import handEvaluator from './HandCalculator';
+import { findAllByDisplayValue } from '@testing-library/dom';
 import React, {Component} from 'react';
 import {UncontrolledTooltip, Button, Card, CardImg, Figure, Container, Row, Col} from 'reactstrap';
 import {handEvaluator, thirteen} from './HandCalculator';
@@ -184,6 +185,14 @@ export default class PokerView extends Component {
 
             } else {
                  if(this.state.betMessage) this.setState({betMessage: null});
+                 if(this.state.bets[0]+this.state.bets[1]===0) {
+                     if(this.state.checked.right&&this.state.checked.left) {
+                         return true;
+                     } else {
+                         this.setState({betMessage: "All players need to check to continue."});
+                         return false;
+                     }
+                 }
                  return true;
             }
 
@@ -304,7 +313,7 @@ export default class PokerView extends Component {
         }
 
         this.dealHand = () => {
-            if(!this.checkBets()) return null;
+            if(!this.checkBets()&&this.state.dealt) return null;
             this.countWins();
 
             let [a,b,table, deck] = [[],[],[], this.state.deck];
@@ -347,7 +356,8 @@ export default class PokerView extends Component {
                 revealLeft: false,
                 revealWinner: false,
                 winCounted: false,
-                checked: {left:  false, right: false}
+                checked: {left:  false, right: false},
+                betMessage: null
             });
 
         }
@@ -454,7 +464,7 @@ export default class PokerView extends Component {
                     }})}
                     <h1>Compare two Poker Hands</h1>
 
-                    <p>{((this.state.checked.right&&this.state.checked.left&&(this.state.bets[0]===this.state.bets[1]))||(this.state.bets[0]===this.state.bets[1]))&&this.state.dealt ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</p>
+                    <p>{((this.state.checked.right&&this.state.checked.left&&(this.state.bets[0]===this.state.bets[1]))||(this.state.bets[0]===this.state.bets[1]&&this.state.bets[0]+this.state.bets[1]>0))&&this.state.dealt ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</p>
 
                     <Button onClick={this.dealHand}>
                         Shuffle and Deal.
