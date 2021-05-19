@@ -124,8 +124,13 @@ export default class PokerView extends Component {
             pot: 0,
             betMessage: null,
             checked: {left: false, right: false},
-            oldBets: [0,0]
+            oldBets: [0,0],
+            betting: false
 
+        }
+
+        this.enableBetting = () => {
+            this.setState({betting: !this.state.betting})    
         }
 
         this.betHands = (hand, chips) => {
@@ -188,7 +193,7 @@ export default class PokerView extends Component {
             } else {
                  if(this.state.betMessage) this.setState({betMessage: null});
                  if(this.state.bets[0]+this.state.bets[1]===0) {
-                     if(this.state.checked.right&&this.state.checked.left) {
+                     if((this.state.checked.right&&this.state.checked.left)||!this.state.betting) {
                          return true;
                      } else {
                          this.setState({betMessage: "All players need to check to continue."});
@@ -496,9 +501,9 @@ export default class PokerView extends Component {
                         <Col xs="2">
                             <this.leftHand />
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
-                            <p>{this.state.chips[0]}</p>
+                            <p>{this.state.betting&&this.state.chips[0]}</p>
 
-                            {(!this.state.revealWinner) &&  (
+                            {(!this.state.revealWinner&&this.state.betting) &&  (
                                 <> <Button onClick={()=>this.fold(0)}>Fold</Button>
                                     <Button onClick={()=>{
 
@@ -538,6 +543,9 @@ export default class PokerView extends Component {
                                 <Button onClick={this.revealWinners}>
                                     Reveal Winner
                                 </Button>
+                                <Button onClick={this.enableBetting}>
+                                    {(this.state.betting) ? "Disable Betting" : "Enable Betting"}
+                                </Button>
                                 <p>{this.state.bets.reduce((a,b)=>a+b)+this.state.pot}</p>
                                 <p>{(this.state.river&&this.state.revealWinner) ? `Total ties: ${this.state.ties}` : ""}</p>
                             </Col>
@@ -555,8 +563,8 @@ export default class PokerView extends Component {
                         <Col xs="2">
                             <this.rightHand />
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
-                            <p>{this.state.chips[1]}</p>
-                            {(!this.state.revealWinner) && (
+                            <p>{this.state.betting&&this.state.chips[1]}</p>
+                            {(!this.state.revealWinner&&this.state.betting) && (
                                 <>
                                 <Button onClick={()=>this.fold(1)}>Fold</Button>
                                 <Button onClick={()=>{
