@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/poker-calculator/static/css/main.a46f0cf6.chunk.css",
-    "main.js": "/poker-calculator/static/js/main.8d953df7.chunk.js",
-    "main.js.map": "/poker-calculator/static/js/main.8d953df7.chunk.js.map",
+    "main.js": "/poker-calculator/static/js/main.a53ca118.chunk.js",
+    "main.js.map": "/poker-calculator/static/js/main.a53ca118.chunk.js.map",
     "runtime-main.js": "/poker-calculator/static/js/runtime-main.7132cbcb.js",
     "runtime-main.js.map": "/poker-calculator/static/js/runtime-main.7132cbcb.js.map",
     "static/css/2.31ff0196.chunk.css": "/poker-calculator/static/css/2.31ff0196.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.31ff0196.chunk.css",
     "static/js/2.e32f2a31.chunk.js",
     "static/css/main.a46f0cf6.chunk.css",
-    "static/js/main.8d953df7.chunk.js"
+    "static/js/main.a53ca118.chunk.js"
   ]
 }
