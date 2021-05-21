@@ -193,7 +193,7 @@ export default class PokerView extends Component {
             } else {
                  if(this.state.betMessage) this.setState({betMessage: null});
                  if(this.state.bets[0]+this.state.bets[1]===0) {
-                     if((this.state.checked.right&&this.state.checked.left)||!this.state.betting) {
+                     if((this.state.checked.right&&this.state.checked.left)||!this.state.betting||(this.state.chips[0]<1||this.state.chips[1]<1)) {
                          return true;
                      } else {
                          this.setState({betMessage: "All players need to check to continue."});
