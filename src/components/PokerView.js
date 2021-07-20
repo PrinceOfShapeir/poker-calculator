@@ -478,15 +478,16 @@ export default class PokerView extends Component {
                     backgroundColor: "#4caf50",
                     border: "thick solid #A0522D",
                     minHeight: "100vh",
-                    height: '100%'
+                    height: '100%',
+                    fontFamily: "Jazz LET"
                 }}>
                     {(() => {if (!this.state.orientationLocked){
                         screen.lockOrientation('landscape');
                         this.lockOrientation();
                     }})}
-                    <h1>Compare two Poker Hands</h1>
+                    <h1>Compare Two Poker Hands</h1>
 
-                    <p>{((this.state.checked.right&&this.state.checked.left&&(this.state.bets[0]===this.state.bets[1]))||(this.state.bets[0]===this.state.bets[1]&&this.state.bets[0]+this.state.bets[1]>0))&&this.state.dealt ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</p>
+                    <h4>{((this.state.checked.right&&this.state.checked.left&&(this.state.bets[0]===this.state.bets[1]))||(this.state.bets[0]===this.state.bets[1]&&this.state.bets[0]+this.state.bets[1]>0))&&this.state.dealt ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</h4>
 
                     <Button onClick={this.dealHand}>
                         Shuffle and Deal.
