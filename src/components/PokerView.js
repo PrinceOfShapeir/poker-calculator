@@ -1,4 +1,5 @@
 //import handEvaluator from './HandCalculator';
+import { findAllByDisplayValue } from '@testing-library/dom';
 import React, {Component} from 'react';
 import {UncontrolledTooltip, Button, Card, CardImg, Figure, Container, Row, Col} from 'reactstrap';
 import {handEvaluator, thirteen} from './HandCalculator';
@@ -101,9 +102,9 @@ export default class PokerView extends Component {
             handA: [53,53],
             handB: [53,53],
             handsPlayed: 0,
-            leftWins: 0,
-            rightWins: 0,
-            ties: 0,
+            leftWins: (localStorage.getItem("leftWins")) ? parseInt(localStorage.getItem("leftWins")) : 0,
+            rightWins: (localStorage.getItem("rightWins")) ? parseInt(localStorage.getItem('rightWins')) : 0,
+            ties: (localStorage.getItem("ties")) ? parseInt(localStorage.getItem('ties')) : 0,
             deck: fillDeck(),
             debug: false,
             handAValue: 0,
@@ -117,8 +118,99 @@ export default class PokerView extends Component {
             revealLeft: false,
             orientationLocked : false,
             revealWinner: false,
-            winCounted: false
+            winCounted: false,
+            chips: [500,500],
+            bets: [0,0],
+            pot: 0,
+            betMessage: null,
+            checked: {left: false, right: false},
+            oldBets: [0,0],
+            betting: false
 
+        }
+
+        this.enableBetting = () => {
+            this.setState({betting: !this.state.betting})    
+        }
+
+        this.betHands = (hand, chips) => {
+
+            if(this.state.checked.right&&this.state.checked.left) this.setState({checked: {right: false, left: false}})
+
+            if(hand===0){
+
+                if(this.state.chips[hand]>=chips) {
+                    return this.setState({
+                        chips: [this.state.chips[hand]-chips, this.state.chips[1]],
+                        bets: [this.state.bets[hand]+chips, this.state.bets[1]]
+                    })
+                }
+
+            } else {
+
+                
+                if(this.state.chips[hand]>=chips) {
+                    return this.setState({
+                        chips: [this.state.chips[0], this.state.chips[hand]-chips],
+                        bets: [this.state.bets[0], this.state.bets[hand]+chips]
+                    })
+                }
+
+
+            }
+
+            
+
+        }
+        this.check = (leftOrRight) => {
+            this.setState({checked: {...this.state.checked, [leftOrRight]: !this.state.checked[leftOrRight]}});
+            //if(this.state.checked.left&&this.state.checked.right) return this.setState({betMessage: "Pot is good."})
+        }
+        this.checkBets = () => {
+
+            if(this.state.bets[0]!==this.state.bets[1]) {
+
+                if(this.state.bets[0]>this.state.bets[1]) {
+                    if(this.state.chips[1]===0) {
+                        if(this.state.betMessage) this.setState({betMessage: null});
+                        return true;
+                    }
+                    else {
+                        this.setState({betMessage: `Right needs to bet ${this.state.bets[0]-this.state.bets[1]} more.`})
+                        return false;
+                    }
+                } else if(this.state.bets[1]>this.state.bets[0]){
+                    if(this.state.chips[0]===0) {
+                        if(this.state.betMessage) this.setState({betMessage: null});
+                        return true;
+                    }
+                    else {
+                        this.setState({betMessage: `Left needs to bet ${this.state.bets[1]-this.state.bets[0]} more.`})
+                        return false; 
+                    }
+                } else return true;
+
+            } else {
+                 if(this.state.betMessage) this.setState({betMessage: null});
+                 if(this.state.bets[0]+this.state.bets[1]===0) {
+                     if((this.state.checked.right&&this.state.checked.left)||!this.state.betting||(this.state.chips[0]<1||this.state.chips[1]<1)) {
+                         return true;
+                     } else {
+                         this.setState({betMessage: "All players need to check to continue."});
+                         return false;
+                     }
+                 }
+                 return true;
+            }
+
+        }
+
+        this.doubleOrNothing = (player) => {
+            let notPlayer = (player) ? 0 : 1;
+            let bets = this.state.bets;
+            if(bets[notPlayer]>bets[player]){
+                return (bets[notPlayer]-bets[player])*2
+            } else return 0;
         }
 
         this.countWins = () => {
@@ -133,9 +225,9 @@ export default class PokerView extends Component {
                     : -1;
                     this.setState({winCounted: true})
 
-                    if(a>0) return this.setState({leftWins: this.state.leftWins + a})
-                    else if(b>0) return this.setState({rightWins: this.state.rightWins + b})
-                    else if(a===b===0) return this.setState({ties: this.state.ties + 1})
+                    if(a>0) return localStorage.setItem("leftWins", this.state.leftWins + a), this.setState({leftWins: this.state.leftWins + a}), this.divideChips(0);
+                    else if(b>0) return localStorage.setItem("rightWins", this.state.rightWins + b), this.setState({rightWins: this.state.rightWins + b}), this.divideChips(1);
+                    else if(a===b===0) return localStorage.setItem("ties", this.state.ties + 1), this.setState({ties: this.state.ties + 1}), this.divideChips(-1);
 
 
                 } else console.log("Error, non numeric hand value");
@@ -143,6 +235,35 @@ export default class PokerView extends Component {
 
             }
             
+        }
+
+        this.divideChips = (result) => {
+
+                if(result>=1) return this.setState({
+                    chips: [this.state.chips[0], this.state.chips[1]+this.state.bets.reduce((a,b)=>a+b)+this.state.pot],
+                    bets: [0,0],
+                    oldBets: [0,0],
+                    pot: 0
+                }); 
+                else if(result===0) return this.setState({
+                    chips: [this.state.chips[0]+this.state.bets.reduce((a,b)=>a+b) +this.state.pot, this.state.chips[1]],
+                    bets: [0,0],
+                    oldBets: [0,0],
+                    pot: 0
+                }); else return this.setState({
+                    chips: [this.state.chips[0]+this.state.bets[0]+this.state.oldBets[0], this.state.chips[1] + this.state.bets[1] + this.state.oldBets[1]],
+                    bets: [0,0],
+                    oldBets: [0,0],
+                    pot: 0
+                })
+
+
+        }
+
+        this.fold = (player) => {
+
+            return this.divideChips(player ? 0 : 1);
+
         }
 
         this.lockOrientation = () => {
@@ -177,29 +298,44 @@ export default class PokerView extends Component {
             })
         }
         this.flopCards = () =>{
-            this.setState({
-                flop: !this.state.flop
+            if(this.checkBets()) this.setState({
+                flop: !this.state.flop,
+                checked: {left:  false, right: false},
+                pot: this.state.bets.reduce((a,b)=>a+b) + this.state.pot,
+                bets: [0,0],
+                oldBets: this.state.oldBets.map((element, index)=>{element+this.state.bets[index]})
             })
         }
         this.turnCards = () =>{
-            this.setState({
-                turn: !this.state.turn
+            if(this.checkBets()) this.setState({
+                turn: !this.state.turn,
+                checked: {left:  false, right: false},
+                pot: this.state.bets.reduce((a,b)=>a+b) + this.state.pot,
+                bets: [0,0],
+                oldBets: this.state.oldBets.map((element, index)=>{element+this.state.bets[index]})
             })
         }
         this.riverCards = () =>{
-            this.setState({
-                river: !this.state.river
+            if(this.checkBets()) this.setState({
+                river: !this.state.river,
+                checked: {left:  false, right: false},
+                pot: this.state.bets.reduce((a,b)=>a+b) + this.state.pot,
+                bets: [0,0],
+                oldBets: this.state.oldBets.map((element, index)=>{element+this.state.bets[index]})
             })
         }
         this.revealWinners = () => {
-            this.countWins();
-            return this.setState({
+            if(this.checkBets()){
+                this.countWins();
+                return this.setState({
                 revealWinner: !this.state.revealWinner
             });
+            }
+
         }
 
         this.dealHand = () => {
-
+            if(!this.checkBets()&&this.state.dealt) return null;
             this.countWins();
 
             let [a,b,table, deck] = [[],[],[], this.state.deck];
@@ -241,7 +377,9 @@ export default class PokerView extends Component {
                 revealRight: false,
                 revealLeft: false,
                 revealWinner: false,
-                winCounted: false
+                winCounted: false,
+                checked: {left:  false, right: false},
+                betMessage: null
             });
 
         }
@@ -348,7 +486,7 @@ export default class PokerView extends Component {
                     }})}
                     <h1>Compare two Poker Hands</h1>
 
-                    <p>Deal two poker hands and then guess which one is the winner.</p>
+                    <p>{((this.state.checked.right&&this.state.checked.left&&(this.state.bets[0]===this.state.bets[1]))||(this.state.bets[0]===this.state.bets[1]&&this.state.bets[0]+this.state.bets[1]>0))&&this.state.dealt ? "Pot is good": ((this.state.betMessage) ? this.state.betMessage : "Deal two poker hands and then guess which one is the winner.") }</p>
 
                     <Button onClick={this.dealHand}>
                         Shuffle and Deal.
@@ -363,6 +501,25 @@ export default class PokerView extends Component {
                         <Col xs="2">
                             <this.leftHand />
                             <Button onClick={this.revealLeft}>Reveal Hand</Button>
+                            <p>{this.state.betting&&this.state.chips[0]}</p>
+
+                            {(!this.state.revealWinner&&this.state.betting) &&  (
+                                <> <Button onClick={()=>this.fold(0)}>Fold</Button>
+                                    <Button onClick={()=>{
+
+                                        if(this.state.bets[1]>this.state.bets[0]) {
+
+                                            this.betHands(0, this.state.bets[1]-this.state.bets[0]);
+
+                                        } else this.check("left");
+
+                                    }}>{(this.state.bets[1]>this.state.bets[0]) ? `Call ${this.state.bets[1]-this.state.bets[0]}` : "Check"}</Button>
+                                    <Button onClick={()=>this.betHands(0,this.doubleOrNothing(0) || 5)}>Bet {this.doubleOrNothing(0) || 5} Chips</Button>
+                                </>
+
+
+                            )}
+                           
                             
                         </Col>
                         <Col xs="8">
@@ -386,6 +543,10 @@ export default class PokerView extends Component {
                                 <Button onClick={this.revealWinners}>
                                     Reveal Winner
                                 </Button>
+                                <Button onClick={this.enableBetting}>
+                                    {(this.state.betting) ? "Disable Betting" : "Enable Betting"}
+                                </Button>
+                                <p>{this.state.bets.reduce((a,b)=>a+b)+this.state.pot}</p>
                                 <p>{(this.state.river&&this.state.revealWinner) ? `Total ties: ${this.state.ties}` : ""}</p>
                             </Col>
                             <Col>
@@ -402,6 +563,24 @@ export default class PokerView extends Component {
                         <Col xs="2">
                             <this.rightHand />
                             <Button onClick={this.revealRight}>Reveal Hand</Button>
+                            <p>{this.state.betting&&this.state.chips[1]}</p>
+                            {(!this.state.revealWinner&&this.state.betting) && (
+                                <>
+                                <Button onClick={()=>this.fold(1)}>Fold</Button>
+                                <Button onClick={()=>{
+
+                                if(this.state.bets[0]>this.state.bets[1]) {
+
+                                    this.betHands(1, this.state.bets[0]-this.state.bets[1]);
+
+                                } else this.check("right");
+
+
+                                }}>{(this.state.bets[0]>this.state.bets[1]) ? `Call ${this.state.bets[0]-this.state.bets[1]}` : "Check"}</Button>
+                                <Button onClick={()=>this.betHands(1,(this.doubleOrNothing(1) || 5 ))}>Bet {(this.doubleOrNothing(1) || 5 )} Chips</Button>
+                            </>
+
+                            ) }
                             
                         </Col>
                         
